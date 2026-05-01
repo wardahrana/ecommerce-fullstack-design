@@ -3,9 +3,9 @@ import FeaturedProducts from '../components/Home/FeaturedProducts';
 import HeroSection from '../components/Home/HeroSection'
 import RecommendedItems from '../components/Home/RecommendedItems';
 import SupplierRequest from '../components/Home/SupplierRequest';
+import ExtraServices from '../components/Home/ExtraServices';
 
 function HomePage() {
-    console.log("HomePage is rendering");
     return (
         <div>
 
@@ -14,6 +14,7 @@ function HomePage() {
             <CategoryCards />
             <SupplierRequest />
             <RecommendedItems />
+            <ExtraServices />
 
         </div>
     )
