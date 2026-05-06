@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api', authRoutes);
 app.use('/api/products', productRoutes);
 
 // ✅ MongoDB connection - SIRF EK BAAR, AUR CHECK KARO URI HAI YA NAHI

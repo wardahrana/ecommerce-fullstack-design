@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
+import SignupModal from '../shared/SignupModal'; // adjust path as needed
 
 const NAV_LINKS = [
     { label: "All category", path: "/categories" },
@@ -29,6 +30,7 @@ export default function AppHeader() {
     const [selectedCategory, setSelectedCategory] = useState("All category");
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [signupOpen, setSignupOpen] = useState(false);
     const navigate = useNavigate();
 
     const cartItems = useSelector((state) => state.cart?.items || []);
@@ -110,18 +112,34 @@ export default function AppHeader() {
                 <div className="flex items-center gap-5 shrink-0 ml-2">
 
                     {/* Profile */}
-                    <Link
-                        to={user ? "/profile" : "/login"}
-                        className="flex flex-col items-center gap-0.5 text-gray-500 hover:text-blue-500 transition-colors group"
-                    >
-                        <motion.div whileHover={{ scale: 1.15 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round"
-                                    d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                            </svg>
-                        </motion.div>
-                        <span className="text-[10px] hidden md:block">Profile</span>
-                    </Link>
+                    {/* Profile */}
+                    {user ? (
+                        <Link
+                            to="/profile"
+                            className="flex flex-col items-center gap-0.5 text-gray-500 hover:text-blue-500 transition-colors group"
+                        >
+                            <motion.div whileHover={{ scale: 1.15 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                            </motion.div>
+                            <span className="text-[10px] hidden md:block">Profile</span>
+                        </Link>
+                    ) : (
+                        <button
+                            onClick={() => setSignupOpen(true)}
+                            className="flex flex-col items-center gap-0.5 text-gray-500 hover:text-blue-500 transition-colors group"
+                        >
+                            <motion.div whileHover={{ scale: 1.15 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round"
+                                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                            </motion.div>
+                            <span className="text-[10px] hidden md:block">Sign Up</span>
+                        </button>
+                    )}
 
                     {/* Message */}
                     <Link
@@ -301,6 +319,16 @@ export default function AppHeader() {
                     </motion.div>
                 )}
             </AnimatePresence>
+            {/* Signup Modal */}
+            <SignupModal
+                isOpen={signupOpen}
+                onClose={() => setSignupOpen(false)}
+                onSuccess={(userData) => {
+                    // Optional: dispatch to Redux store here
+                    // dispatch(setUser(userData));
+                    setSignupOpen(false);
+                }}
+            />
         </header>
     );
 }
