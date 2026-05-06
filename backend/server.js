@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
-
+const cartRoutes = require('./routes/cartRoutes');
 const app = express();
 
 // Middleware
@@ -15,6 +15,7 @@ app.use(express.json());
 // Routes
 app.use('/api', authRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
 
 // ✅ MongoDB connection - SIRF EK BAAR, AUR CHECK KARO URI HAI YA NAHI
 const MONGODB_URI = process.env.MONGODB_URI;

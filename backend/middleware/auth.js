@@ -1,30 +1,32 @@
-const { verifyToken } = require('../utils/jwt');
+const jwt = require('jsonwebtoken');
 
 const protect = async (req, res, next) => {
-    let token;
-    if (req.headers.authorization?.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-        return res.status(401).json({ message: 'Not authorized, no token' });
-    }
-
     try {
-        const decoded = verifyToken(token);
-        req.user = decoded; // { id, role }
+        let token;
+
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            token = req.headers.authorization.split(' ')[1];
+        }
+
+        if (!token) {
+            return res.status(401).json({ message: 'Not authorized, no token' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secretkey123');
+        req.user = { id: decoded.id, role: decoded.role };
         next();
     } catch (error) {
-        res.status(401).json({ message: 'Invalid or expired token' });
+        console.error('Auth middleware error:', error);
+        res.status(401).json({ message: 'Not authorized, token failed' });
     }
 };
 
-const adminOnly = (req, res, next) => {
+const admin = (req, res, next) => {
     if (req.user && req.user.role === 'admin') {
         next();
     } else {
-        res.status(403).json({ message: 'Access denied. Admins only.' });
+        res.status(401).json({ message: 'Not authorized as admin' });
     }
 };
 
-module.exports = { protect, adminOnly };
+module.exports = { protect, admin };

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { BrowserRouter } from 'react-router-dom'
+import { CartProvider } from './context/CartContext';
 import './styles/index.css'
 import App from './App'
 
@@ -18,7 +19,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <CartProvider>      {/* ← Add this wrapper */}
+          <App />
+        </CartProvider>
       </BrowserRouter>
     </Provider>
   </StrictMode>,

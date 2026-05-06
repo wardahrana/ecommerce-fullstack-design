@@ -38,7 +38,17 @@ export default function AppHeader() {
         (total, item) => total + (item.quantity || 1),
         0
     );
-    const user = useSelector((state) => state.user?.currentUser ?? null);
+    const reduxUser = useSelector((state) => state.user?.currentUser ?? null);
+    const [localUser, setLocalUser] = useState(() => {
+        try {
+            const saved = localStorage.getItem("user");
+            return saved ? JSON.parse(saved) : null;
+        } catch (e) {
+            return null;
+        }
+    });
+
+    const activeUser = reduxUser || localUser;
 
     // Scroll effect — transparent → solid
     useEffect(() => {
@@ -111,22 +121,27 @@ export default function AppHeader() {
                 {/* Right icons */}
                 <div className="flex items-center gap-5 shrink-0 ml-2">
 
+
                     {/* Profile */}
                     {/* Profile */}
-                    {user ? (
+                    {/* Profile */}
+                    {activeUser ? (
+                        // LOGGED IN - No "Profile" text
                         <Link
                             to="/profile"
                             className="flex flex-col items-center gap-0.5 text-gray-500 hover:text-blue-500 transition-colors group"
                         >
-                            <motion.div whileHover={{ scale: 1.15 }} transition={{ type: "spring", stiffness: 400, damping: 17 }}>
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round"
-                                        d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                </svg>
+                            <motion.div
+                                whileHover={{ scale: 1.15 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                                className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm"
+                            >
+                                {activeUser?.name ? activeUser.name.charAt(0).toUpperCase() : "?"}
                             </motion.div>
-                            <span className="text-[10px] hidden md:block">Profile</span>
+                            {/* NO SPAN TAG HERE */}
                         </Link>
                     ) : (
+                        // LOGGED OUT - Has "Profile" text
                         <button
                             onClick={() => setSignupOpen(true)}
                             className="flex flex-col items-center gap-0.5 text-gray-500 hover:text-blue-500 transition-colors group"
@@ -137,9 +152,10 @@ export default function AppHeader() {
                                         d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                 </svg>
                             </motion.div>
-                            <span className="text-[10px] hidden md:block">Sign Up</span>
+                            <span className="text-[10px] hidden md:block">Profile</span> {/* This only shows when logged out */}
                         </button>
                     )}
+
 
                     {/* Message */}
                     <Link
@@ -324,8 +340,11 @@ export default function AppHeader() {
                 isOpen={signupOpen}
                 onClose={() => setSignupOpen(false)}
                 onSuccess={(userData) => {
-                    // Optional: dispatch to Redux store here
-                    // dispatch(setUser(userData));
+                    const loggedInUser = userData?.user || userData;
+                    if (loggedInUser) {
+                        setLocalUser(loggedInUser);
+                        localStorage.setItem("user", JSON.stringify(loggedInUser));
+                    }
                     setSignupOpen(false);
                 }}
             />

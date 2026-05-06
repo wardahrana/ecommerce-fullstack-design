@@ -1,14 +1,22 @@
 const express = require('express');
-const { protect, adminOnly } = require('../middleware/auth');
-const { getProducts, createProduct, deleteProduct } = require('../controllers/productController');
 const router = express.Router();
 
-// All product routes require authentication
-router.use(protect);
+// Temporary - dummy handlers if controllers don't exist yet
+const getProducts = (req, res) => {
+    res.json({ message: 'Products route working' });
+};
 
-// Admin-only routes
+const getProductById = (req, res) => {
+    res.json({ message: `Get product ${req.params.id}` });
+};
+
+const createProduct = (req, res) => {
+    res.json({ message: 'Create product' });
+};
+
+// Routes
 router.get('/', getProducts);
-router.post('/', adminOnly, createProduct);
-router.delete('/:id', adminOnly, deleteProduct);
+router.get('/:id', getProductById);
+router.post('/', createProduct);
 
 module.exports = router;
