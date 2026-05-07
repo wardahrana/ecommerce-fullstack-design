@@ -31,83 +31,122 @@ const FeaturedProducts = () => {
         return () => clearInterval(timer);
     }, []);
 
-    // Pehle 5 products lelo deals ke liye
-    const dealsProducts = products.slice(0, 5);
+    // Get unique products (no repeats)
+    const getUniqueProducts = () => {
+        if (!products || products.length === 0) {
+            return [];
+        }
+        const unique = [];
+        const seenIds = new Set();
+        for (const product of products) {
+            if (!seenIds.has(product.id)) {
+                seenIds.add(product.id);
+                unique.push(product);
+            }
+        }
+        // Take first 5 products for 5 columns
+        return unique.slice(0, 5);
+    };
+
+    const displayProducts = getUniqueProducts();
+    const PLACEHOLDER = 'https://placehold.co/80x80/9ca3af/white?text=Product';
+
+    const calculateDiscount = (oldPrice, currentPrice) => {
+        if (oldPrice && currentPrice && oldPrice > currentPrice) {
+            return Math.round(((oldPrice - currentPrice) / oldPrice) * 100);
+        }
+        return null;
+    };
 
     return (
-        <section className="py-4 bg-gray-50">
+        <section className="py-8 bg-gray-50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl">
-                <div className="bg-white border border-gray-200 rounded-md flex flex-col md:flex-row overflow-hidden shadow-sm">
+                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-gray-200">
 
-                    {/* Left Block: Countdown */}
-                    <div className="p-6 border-b md:border-b-0 md:border-r border-gray-200 w-full md:w-[280px] shrink-0">
-                        <h3 className="text-[20px] font-bold text-gray-900 mb-1">Deals and offers</h3>
-                        <p className="text-gray-500 text-[15px] mb-4">Hygiene equipments</p>
-
-                        <div className="flex gap-2">
-                            {[
-                                { label: 'Days', value: timeLeft.days },
-                                { label: 'Hour', value: timeLeft.hours },
-                                { label: 'Min', value: timeLeft.mins },
-                                { label: 'Sec', value: timeLeft.secs }
-                            ].map((time, idx) => (
-                                <div key={idx} className="bg-[#606060] text-white w-[50px] h-[55px] rounded flex flex-col items-center justify-center">
-                                    <span className="font-bold text-[16px] leading-none">{String(time.value).padStart(2, '0')}</span>
-                                    <span className="text-[11px] mt-1 font-light">{time.label}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Right Block: Products List */}
-                    <div className="flex-1 flex overflow-x-auto scrollbar-hide divide-x divide-gray-200">
-                        {dealsProducts.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500 w-full">
-                                No deals available
+                        {/* Left Side - Timer Section */}
+                        <div className="md:w-[280px] bg-white p-6 md:p-8 flex flex-col justify-start">
+                            <div className="mb-4">
+                                <h3 className="text-xl md:text-2xl font-bold text-gray-900 leading-tight mb-1">
+                                    Deals and offers
+                                </h3>
+                                <p className="text-sm md:text-base text-gray-500">
+                                    Hygiene equipments
+                                </p>
                             </div>
-                        ) : (
-                            dealsProducts.map((product) => (
-                                <motion.div
-                                    key={product.id}
-                                    whileHover={{ backgroundColor: "#f8f9fa" }}
-                                    className="p-5 flex flex-col items-center justify-between min-w-[150px] flex-1 cursor-pointer transition-colors"
-                                >
-                                    <div className="w-[110px] h-[110px] mb-4 overflow-hidden flex items-center justify-center">
-                                        <motion.img
-                                            whileHover={{ scale: 1.15 }}
-                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                            src={product.image}
-                                            alt={product.title}
-                                            className="max-w-full max-h-full object-contain"
-                                            loading="lazy"
-                                            onError={(e) => {
-                                                e.target.src = "https://via.placeholder.com/110x110?text=Product";
-                                            }}
-                                        />
-                                    </div>
-                                    <p className="text-[15px] text-[#1c1c1c] text-center mb-2 font-medium line-clamp-2">
-                                        {product.title}
-                                    </p>
-                                    <div className="flex gap-2 items-center">
-                                        {product.oldPrice && (
-                                            <>
-                                                <span className="bg-[#ffe3e3] text-[#eb001b] text-[13px] font-semibold px-3 py-1 rounded-full">
-                                                    -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
-                                                </span>
-                                                <span className="text-xs text-gray-400 line-through">
-                                                    ${product.oldPrice}
-                                                </span>
-                                            </>
-                                        )}
-                                    </div>
-                                    <p className="text-green-600 font-semibold text-sm mt-1">
-                                        ${product.price}
-                                    </p>
-                                </motion.div>
-                            ))
-                        )}
-                    </div>
 
+                            {/* Timer */}
+                            <div className="flex gap-2">
+                                {[
+                                    { label: 'Days', value: timeLeft.days },
+                                    { label: 'Hour', value: timeLeft.hours },
+                                    { label: 'Min', value: timeLeft.mins },
+                                    { label: 'Sec', value: timeLeft.secs }
+                                ].map((time, idx) => (
+                                    <div key={idx} className="bg-[#606060] text-white rounded-[4px] w-[50px] h-[60px] flex flex-col items-center justify-center">
+                                        <span className="font-bold text-lg leading-none">{String(time.value).padStart(2, '0')}</span>
+                                        <span className="text-[10px] mt-1 font-light opacity-90">{time.label}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Right Side - 5 Columns Horizontal Grid */}
+                        <div className="flex-1 overflow-x-auto">
+                            {displayProducts.length === 0 ? (
+                                <div className="text-center py-12 text-gray-500 w-full">
+                                    <p>No products available.</p>
+                                    <p className="text-sm mt-2">Add products from admin panel.</p>
+                                </div>
+                            ) : (
+                                <div className="flex flex-nowrap md:grid md:grid-cols-5 w-full md:divide-x divide-gray-200 min-w-max md:min-w-0">
+                                    {displayProducts.map((product, index) => {
+                                        const discount = calculateDiscount(product.oldPrice, product.price);
+                                        return (
+                                            <motion.div
+                                                key={product.id}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: index * 0.1 }}
+                                                className="flex flex-col items-center p-4 bg-white hover:bg-gray-50 transition-colors cursor-pointer group w-[160px] md:w-auto"
+                                            >
+                                                {/* Product Image */}
+                                                <div className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] mb-4 flex items-center justify-center overflow-hidden shrink-0">
+                                                    <img
+                                                        src={product.image || PLACEHOLDER}
+                                                        alt={product.title}
+                                                        className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105"
+                                                        loading="lazy"
+                                                        onError={(e) => {
+                                                            e.target.src = PLACEHOLDER;
+                                                        }}
+                                                    />
+                                                </div>
+
+                                                {/* Product Info */}
+                                                <div className="flex flex-col items-center text-center w-full">
+                                                    <h4 className="text-sm text-gray-800 mb-2 truncate w-full px-2">
+                                                        {product.title || 'Product'}
+                                                    </h4>
+
+                                                    {discount ? (
+                                                        <span className="text-xs font-semibold text-red-500 bg-red-100 px-3 py-1 rounded-full">
+                                                            -{discount}%
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-xs font-semibold text-red-500 bg-red-100 px-3 py-1 rounded-full">
+                                                            -25%
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </section>

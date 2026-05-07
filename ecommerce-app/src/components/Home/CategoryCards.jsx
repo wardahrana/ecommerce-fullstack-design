@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 
 // Mock data matching the Consumer Electronics section
 const ELECTRONICS_DATA = [
-    { name: "Smart watches", price: "From USD 19", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80" },
-    { name: "Cameras", price: "From USD 89", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=200&q=80" },
-    { name: "Headphones", price: "From USD 10", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80" },
-    { name: "Smart watches", price: "From USD 90", image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=200&q=80" },
-    { name: "Gaming set", price: "From USD 35", image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=200&q=80" },
-    { name: "Laptops & PC", price: "From USD 340", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&q=80" },
-    { name: "Smartphones", price: "From USD 19", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&q=80" },
-    { name: "Electric kattle", price: "From USD 240", image: "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=200&q=80" },
+    { name: "Smart watches", price: "From USD 19", image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=200&q=80" }, // Watch on white
+    { name: "Cameras", price: "From USD 89", image: "https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?w=200&q=80" }, // Camera on white
+    { name: "Headphones", price: "From USD 10", image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=200&q=80" }, // Headphones on white
+    { name: "Smart watches", price: "From USD 90", image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=200&q=80" }, // Apple watch on white
+    { name: "Gaming set", price: "From USD 35", image: "https://images.unsplash.com/photo-1600080972464-8e5f35f63d08?w=200&q=80" }, // Controller on white
+    { name: "Laptops & PC", price: "From USD 340", image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=200&q=80" }, // Macbook on white
+    { name: "Smartphones", price: "From USD 19", image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbc3?w=200&q=80" }, // iPhone on white
+    { name: "Electric kattle", price: "From USD 240", image: "https://images.unsplash.com/photo-1585659722983-39cb86b22dee?w=200&q=80" }, // Appliance on white
 ];
 
 const CategoryCards = ({
