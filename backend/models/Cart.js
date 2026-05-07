@@ -1,39 +1,23 @@
+// backend/models/Cart.js
 const mongoose = require('mongoose');
 
-const CartItemSchema = new mongoose.Schema({
-    productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true
-    },
-    quantity: {
-        type: Number,
-        required: true,
-        min: 1,
-        default: 1
-    },
-    price: {
-        type: Number,
-        required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    image: {
-        type: String,
-        default: ''
-    }
-});
+const cartItemSchema = new mongoose.Schema({
+    productId: { type: String, required: true },
+    name: { type: String, required: true },
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true, min: 1, default: 1 },
+    image: { type: String, required: true },
+    size: { type: String, default: null },
+    color: { type: String, default: null }
+}, { _id: true });
 
-const CartSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+const cartSchema = new mongoose.Schema({
+    user: {                    // ✅ Field name 'user' (not 'userId')
+        type: String,
         required: true,
         unique: true
     },
-    items: [CartItemSchema],
+    items: [cartItemSchema],
     totalItems: {
         type: Number,
         default: 0
@@ -41,16 +25,23 @@ const CartSchema = new mongoose.Schema({
     totalPrice: {
         type: Number,
         default: 0
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     }
-}, {
-    timestamps: true
 });
 
-// Update totals before saving
-CartSchema.pre('save', function (next) {
+// Update timestamps on save
+cartSchema.pre('save', function (next) {
+    this.updatedAt = Date.now();
     this.totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
     this.totalPrice = this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     next();
 });
 
-module.exports = mongoose.model('Cart', CartSchema);
+module.exports = mongoose.model('Cart', cartSchema);
