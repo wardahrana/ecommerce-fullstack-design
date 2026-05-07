@@ -1,17 +1,11 @@
+// components/Home/FeaturedProducts.jsx
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-
-// Mock data matching the Figma Deals & Offers section
-const DEALS = [
-    { name: "Smart watches", discount: "-25%", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&q=80" },
-    { name: "Laptops", discount: "-15%", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&q=80" },
-    { name: "GoPro cameras", discount: "-40%", image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=200&q=80" },
-    { name: "Headphones", discount: "-25%", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80" },
-    { name: "Canon cameras", discount: "-25%", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=200&q=80" },
-];
+import { useProducts } from '../../hooks/useProducts';
 
 const FeaturedProducts = () => {
-    // Countdown Timer State
+    const { products } = useProducts();
+
     const [timeLeft, setTimeLeft] = useState({ days: 4, hours: 13, mins: 34, secs: 56 });
 
     useEffect(() => {
@@ -36,6 +30,9 @@ const FeaturedProducts = () => {
         }, 1000);
         return () => clearInterval(timer);
     }, []);
+
+    // Pehle 5 products lelo deals ke liye
+    const dealsProducts = products.slice(0, 5);
 
     return (
         <section className="py-4 bg-gray-50">
@@ -64,28 +61,51 @@ const FeaturedProducts = () => {
 
                     {/* Right Block: Products List */}
                     <div className="flex-1 flex overflow-x-auto scrollbar-hide divide-x divide-gray-200">
-                        {DEALS.map((deal, idx) => (
-                            <motion.div
-                                key={idx}
-                                whileHover={{ backgroundColor: "#f8f9fa" }}
-                                className="p-5 flex flex-col items-center justify-between min-w-[150px] flex-1 cursor-pointer transition-colors"
-                            >
-                                <div className="w-[110px] h-[110px] mb-4 overflow-hidden flex items-center justify-center">
-                                    <motion.img
-                                        whileHover={{ scale: 1.15 }}
-                                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                        src={deal.image}
-                                        alt={deal.name}
-                                        className="max-w-full max-h-full object-contain mix-blend-multiply"
-                                        loading="lazy"
-                                    />
-                                </div>
-                                <p className="text-[15px] text-[#1c1c1c] text-center mb-2 font-medium">{deal.name}</p>
-                                <span className="bg-[#ffe3e3] text-[#eb001b] text-[13px] font-semibold px-3 py-1 rounded-full">
-                                    {deal.discount}
-                                </span>
-                            </motion.div>
-                        ))}
+                        {dealsProducts.length === 0 ? (
+                            <div className="p-8 text-center text-gray-500 w-full">
+                                No deals available
+                            </div>
+                        ) : (
+                            dealsProducts.map((product) => (
+                                <motion.div
+                                    key={product.id}
+                                    whileHover={{ backgroundColor: "#f8f9fa" }}
+                                    className="p-5 flex flex-col items-center justify-between min-w-[150px] flex-1 cursor-pointer transition-colors"
+                                >
+                                    <div className="w-[110px] h-[110px] mb-4 overflow-hidden flex items-center justify-center">
+                                        <motion.img
+                                            whileHover={{ scale: 1.15 }}
+                                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                            src={product.image}
+                                            alt={product.title}
+                                            className="max-w-full max-h-full object-contain"
+                                            loading="lazy"
+                                            onError={(e) => {
+                                                e.target.src = "https://via.placeholder.com/110x110?text=Product";
+                                            }}
+                                        />
+                                    </div>
+                                    <p className="text-[15px] text-[#1c1c1c] text-center mb-2 font-medium line-clamp-2">
+                                        {product.title}
+                                    </p>
+                                    <div className="flex gap-2 items-center">
+                                        {product.oldPrice && (
+                                            <>
+                                                <span className="bg-[#ffe3e3] text-[#eb001b] text-[13px] font-semibold px-3 py-1 rounded-full">
+                                                    -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
+                                                </span>
+                                                <span className="text-xs text-gray-400 line-through">
+                                                    ${product.oldPrice}
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
+                                    <p className="text-green-600 font-semibold text-sm mt-1">
+                                        ${product.price}
+                                    </p>
+                                </motion.div>
+                            ))
+                        )}
                     </div>
 
                 </div>

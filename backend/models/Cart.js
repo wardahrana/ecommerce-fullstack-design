@@ -1,4 +1,3 @@
-// backend/models/Cart.js
 const mongoose = require('mongoose');
 
 const cartItemSchema = new mongoose.Schema({
@@ -12,31 +11,19 @@ const cartItemSchema = new mongoose.Schema({
 }, { _id: true });
 
 const cartSchema = new mongoose.Schema({
-    user: {                    // ✅ Field name 'user' (not 'userId')
+    user: {
         type: String,
         required: true,
         unique: true
     },
     items: [cartItemSchema],
-    totalItems: {
-        type: Number,
-        default: 0
-    },
-    totalPrice: {
-        type: Number,
-        default: 0
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    }
+    totalItems: { type: Number, default: 0 },
+    totalPrice: { type: Number, default: 0 },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now }
 });
 
-// Update timestamps on save
+// ← Yeh uncomment karo — next parameter correctly likha hai
 cartSchema.pre('save', function (next) {
     this.updatedAt = Date.now();
     this.totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);

@@ -1,7 +1,6 @@
-// Replace the existing ProductDetailsPage with this improved version
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { PRODUCTS } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
 import ProductTopSection from '../components/ProductDetails/ProductTopSection';
 import ProductMiddleSection from '../components/ProductDetails/ProductMiddleSection';
 import ProductBottomSection from '../components/ProductDetails/ProductBottomSection';
@@ -9,16 +8,16 @@ import ProductBottomSection from '../components/ProductDetails/ProductBottomSect
 const ProductDetailsPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { getById } = useProducts();
     const [product, setProduct] = useState(null);
 
     useEffect(() => {
         window.scrollTo(0, 0);
 
-        const found = PRODUCTS.find(p => p.id === parseInt(id));
+        const found = getById(id);
         if (found) {
             setProduct(found);
         } else {
-            // Product not found - redirect to homepage after 2 seconds
             setTimeout(() => {
                 navigate('/');
             }, 2000);
@@ -37,7 +36,6 @@ const ProductDetailsPage = () => {
     return (
         <div className="bg-[#f8fafc] min-h-screen py-4">
             <div className="max-w-screen-xl mx-auto px-4">
-                {/* Breadcrumb */}
                 <nav className="flex items-center text-sm text-gray-500 py-2 mb-4">
                     <Link to="/" className="hover:text-blue-600 transition-colors">Home</Link>
                     <span className="mx-2 text-gray-400">/</span>
