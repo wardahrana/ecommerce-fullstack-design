@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../../pages/LoginModel';
+import winterCoatImg from '../assets/cloth/2.jpg'; // Path check kar lein
+import blendersImg from '../assets/cloth/4.jpg';
 
 const RecommendedItems = ({ items }) => { // Data ab props se aa raha hai
     const navigate = useNavigate();
