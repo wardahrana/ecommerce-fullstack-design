@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useProducts } from '../../hooks/useProducts'
 
 const ProductMiddleSection = ({ product }) => {
     const [activeTab, setActiveTab] = useState('Description');
     const tabs = ['Description', 'Reviews', 'Shipping', 'About seller'];
 
-    const youMayLike = [
-        { id: 101, title: "Men Blazers Sets Elegant Formal", price: "$7.00 - $99.50", image: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?q=80&w=150&auto=format&fit=crop" },
-        { id: 102, title: "Men Shirt Sleeve Polo Contrast", price: "$7.00 - $99.50", image: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=150&auto=format&fit=crop" },
-        { id: 103, title: "Apple Watch Series Space Gray", price: "$7.00 - $99.50", image: "https://images.unsplash.com/photo-1434493789847-2f02b0c1e850?q=80&w=150&auto=format&fit=crop" },
-        { id: 104, title: "Basketball Crew Socks Long Stuff", price: "$7.00 - $99.50", image: "https://images.unsplash.com/photo-1582142407894-ec85a1260a46?q=80&w=150&auto=format&fit=crop" },
-        { id: 105, title: "New Summer Men's castrol T-Shirts", price: "$7.00 - $99.50", image: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9?q=80&w=150&auto=format&fit=crop" }
-    ];
+
+    const { products } = useProducts()
+    const youMayLike = products.slice(0, 5)
 
     return (
         <div className="flex flex-col lg:flex-row gap-6">
@@ -23,9 +20,8 @@ const ProductMiddleSection = ({ product }) => {
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={`pb-3 text-sm font-medium whitespace-nowrap relative transition-colors ${
-                                activeTab === tab ? 'text-blue-500' : 'text-gray-500 hover:text-gray-700'
-                            }`}
+                            className={`pb-3 text-sm font-medium whitespace-nowrap relative transition-colors ${activeTab === tab ? 'text-blue-500' : 'text-gray-500 hover:text-gray-700'
+                                }`}
                         >
                             {tab}
                             {activeTab === tab && (
@@ -82,8 +78,8 @@ const ProductMiddleSection = ({ product }) => {
                 <h3 className="font-semibold text-gray-900 mb-4">You may like</h3>
                 <div className="flex flex-col gap-4">
                     {youMayLike.map((item) => (
-                        <motion.div 
-                            key={item.id} 
+                        <motion.div
+                            key={item.id}
                             whileHover={{ scale: 1.02 }}
                             className="flex items-center gap-3 cursor-pointer group"
                         >

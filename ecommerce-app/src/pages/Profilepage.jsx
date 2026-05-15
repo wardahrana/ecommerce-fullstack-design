@@ -1,37 +1,35 @@
 // src/pages/ProfilePage.jsx
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { logoutUser, getCurrentUser } from '../services/api';
+import { useAuth } from '../context/AuthContext';  // ← Import useAuth
 import { motion } from 'framer-motion';
 import { LogOut, User, Mail, ShoppingBag, Heart, Settings, ChevronRight } from 'lucide-react';
 
 const ProfilePage = () => {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+    const { user, logout, isLoading } = useAuth();  // ← Use useAuth instead
 
     useEffect(() => {
-        const currentUser = getCurrentUser();
-        if (!currentUser) {
+        if (!isLoading && !user) {
             navigate('/');
-            return;
         }
-        setUser(currentUser);
-    }, [navigate]);
+    }, [user, isLoading, navigate]);
 
     const handleLogout = () => {
-        logoutUser();
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        logout();  // ← Use context logout
         navigate('/');
-        window.location.reload();
     };
 
-    if (!user) {
+    if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
+    }
+
+    if (!user) {
+        return null;
     }
 
     return (

@@ -1,9 +1,10 @@
 import React from 'react';
 import ProductCard from './ProductCard';
 import Pagination from './Pagination';
-import { PRODUCTS } from '../../data/products';
+import { useProducts } from '../../hooks/useProducts';
 
 const ProductList = () => {
+    const { products } = useProducts()
     return (
         <div className="flex-1 w-full">
             {/* Top Bar */}
@@ -39,7 +40,7 @@ const ProductList = () => {
 
             {/* Product List */}
             <div className="flex flex-col gap-4">
-                {PRODUCTS.map(product => (
+                {products.map(product => (
                     <ProductCard key={product.id} product={product} />
                 ))}
             </div>

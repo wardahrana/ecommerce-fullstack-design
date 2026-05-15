@@ -1,163 +1,106 @@
-// components/Home/RecommendedItems.jsx
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useProducts } from '../../hooks/useProducts';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import LoginModal from '../../pages/LoginModel';
 
-const RecommendedItems = () => {
-    const { products } = useProducts();
-    const [hoveredProduct, setHoveredProduct] = useState(null);
+import menTShirt from '../../assets/cloth/1.jpg';
+import blueJeansShorts from '../../assets/cloth/4.jpg';
+import winterCoat from '../../assets/cloth/3.jpg';
+import travelJeansBag from '../../assets/cloth/5.jpg';
+import leatherWallet from '../../assets/cloth/6.jpg';
+import denimShorts from '../../assets/cloth/7.jpg';
+import backpack from '../../assets/tech/9.jpg';
+import ceramicPot from '../../assets/interior/3.jpg';
+import electricKettle from '../../assets/tech/10.jpg';
+import moneyplant from '../../assets/interior/4.jpg';
 
-    // Get first 10 products or all
-    const recommendedProducts = products.length > 10 ? products.slice(0, 10) : products;
+const RECOMMENDED = [
+    { id: "rec-1", name: "Men's T-Shirts", price: 10.30, priceLabel: "$10.30", description: "T-shirts with multiple colors, for men.", category: "Clothing", image: menTShirt },
+    { id: "rec-2", name: "Blue Jeans Shorts", price: 10.30, priceLabel: "$10.30", description: "Jeans shorts for men blue color.", category: "Clothing", image: blueJeansShorts },
+    { id: "rec-3", name: "Winter Coat", price: 12.50, priceLabel: "$12.50", description: "Brown winter coat medium size.", category: "Clothing", image: winterCoat },
+    { id: "rec-4", name: "Travel Jeans Bag", price: 34.00, priceLabel: "$34.00", description: "Jeans bag for travel for men.", category: "Accessories", image: travelJeansBag },
+    { id: "rec-5", name: "Leather Wallet", price: 99.00, priceLabel: "$99.00", description: "Premium genuine leather wallet.", category: "Accessories", image: leatherWallet },
+    { id: "rec-6", name: "Denim Shorts", price: 9.99, priceLabel: "$9.99", description: "Jeans shorts for men blue color.", category: "Clothing", image: denimShorts },
+    { id: "rec-8", name: "Backpack", price: 10.30, priceLabel: "$10.30", description: "Jeans bag for travel for men.", category: "Accessories", image: backpack },
+    { id: "rec-9", name: "Ceramic Pot", price: 80.95, priceLabel: "$80.95", description: "Ceramic pot for plants decoration.", category: "Home", image: ceramicPot },
+    { id: "rec-10", name: "Electric Kettle", price: 9.99, priceLabel: "$9.99", description: "Fast boiling electric water kettle.", category: "Appliances", image: electricKettle },
+    { id: "rec-11", name: "Men's T-Shirts", price: 10.30, priceLabel: "$10.30", description: "T-shirts with multiple colors, for men.", category: "Clothing", image: moneyplant },
+];
+
+const ProductImage = ({ src, alt }) => {
+    const [imgSrc, setImgSrc] = React.useState(src);
+    const [hasError, setHasError] = React.useState(false);
+
+    const handleError = () => {
+        if (!hasError) {
+            setHasError(true);
+            setImgSrc('');
+        }
+    };
 
     return (
-        <section className="py-8 pb-16 bg-gray-50">
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl">
+        <motion.img
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            src={imgSrc}
+            alt={alt}
+            className="max-h-full max-w-full object-contain mix-blend-multiply"
+            loading="lazy"
+            onError={handleError}
+        />
+    );
+};
 
-                {/* Section Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <div>
-                        <h3 className="text-2xl font-bold text-gray-900">Recommended items</h3>
-                        <p className="text-gray-500 text-sm mt-1">Based on your preferences</p>
-                    </div>
-                    <button className="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors">
-                        View All →
-                    </button>
-                </div>
+const RecommendedItems = () => {
+    const navigate = useNavigate();
+    const { user, login } = useAuth();
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+    const [pendingItem, setPendingItem] = useState(null);
 
-                {recommendedProducts.length === 0 ? (
-                    <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-                        <p className="text-gray-500">No products found. Add some products from admin panel.</p>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-                        {recommendedProducts.map((product, index) => (
+    const handleItemClick = (item) => {
+        if (!user) {
+            setPendingItem(item);
+            setLoginModalOpen(true);
+            return;
+        }
+        navigate(`/product/${item.id}`, { state: { product: item } });
+    };
+
+    return (
+        <>
+            <section className="py-4 pb-12 bg-gray-50">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-screen-xl">
+                    <h3 className="text-[20px] font-bold text-[#1c1c1c] mb-5">Recommended items</h3>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {RECOMMENDED.map((item) => (
                             <motion.div
-                                key={product.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                                whileHover={{ y: -8 }}
-                                onHoverStart={() => setHoveredProduct(product.id)}
-                                onHoverEnd={() => setHoveredProduct(null)}
-                                className="group relative bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer"
+                                key={item.id}
+                                onClick={() => handleItemClick(item)}
+                                whileHover={{ y: -5, boxShadow: "0 10px 20px -5px rgba(0, 0, 0, 0.1)" }}
+                                className="bg-white border border-gray-200 rounded-md p-4 flex flex-col transition-shadow h-full"
+                                style={{ cursor: user ? "pointer" : "not-allowed" }}
                             >
-                                {/* Product Image Container */}
-                                <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 p-4 overflow-hidden">
-                                    <motion.div
-                                        animate={{ scale: hoveredProduct === product.id ? 1.1 : 1 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="h-[150px] flex items-center justify-center"
-                                    >
-                                        <img
-                                            src={product.image}
-                                            alt={product.title}
-                                            className="max-h-full max-w-full object-contain"
-                                            loading="lazy"
-                                            onError={(e) => {
-                                                e.target.src = "https://via.placeholder.com/150x150?text=Product";
-                                            }}
-                                        />
-                                    </motion.div>
-
-                                    {/* Discount Badge */}
-                                    {product.oldPrice && (
-                                        <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg">
-                                            -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
-                                        </div>
-                                    )}
-
-                                    {/* Wishlist Button */}
-                                    <button className="absolute top-3 right-3 bg-white rounded-full p-1.5 shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110">
-                                        <svg className="w-4 h-4 text-gray-600 hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                        </svg>
-                                    </button>
-
-                                    {/* Quick Add Button */}
-                                    <AnimatePresence>
-                                        {hoveredProduct === product.id && (
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 20 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                exit={{ opacity: 0, y: 20 }}
-                                                className="absolute bottom-3 left-3 right-3"
-                                            >
-                                                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 rounded-lg shadow-lg transition-colors">
-                                                    Add to Cart
-                                                </button>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                <div className="w-full h-[150px] mb-4 flex items-center justify-center overflow-hidden">
+                                    <ProductImage src={item.image} alt={item.name} />
                                 </div>
-
-                                {/* Product Info */}
-                                <div className="p-3">
-                                    {/* Category/Type Badge */}
-                                    {product.type && (
-                                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full inline-block mb-2">
-                                            {product.type}
-                                        </span>
-                                    )}
-
-                                    {/* Product Title */}
-                                    <h4 className="text-sm font-semibold text-gray-800 mb-1 line-clamp-2 min-h-[40px]">
-                                        {product.title}
-                                    </h4>
-
-                                    {/* Price */}
-                                    <div className="flex items-baseline gap-2 mb-2">
-                                        <span className="text-lg font-bold text-blue-600">
-                                            ${product.price}
-                                        </span>
-                                        {product.oldPrice && (
-                                            <span className="text-xs text-gray-400 line-through">
-                                                ${product.oldPrice}
-                                            </span>
-                                        )}
-                                    </div>
-
-                                    {/* From USD Text */}
-                                    <p className="text-xs text-gray-500 mb-2">
-                                        From USD {Math.floor(product.price)}
-                                    </p>
-
-                                    {/* Rating and Stock */}
-                                    <div className="flex items-center justify-between">
-                                        {product.rating && (
-                                            <div className="flex items-center gap-1">
-                                                <div className="flex text-yellow-400 text-xs">
-                                                    {"★".repeat(Math.floor(product.rating))}
-                                                    {"☆".repeat(5 - Math.floor(product.rating))}
-                                                </div>
-                                                <span className="text-xs text-gray-500">({product.reviewCount})</span>
-                                            </div>
-                                        )}
-
-                                        {/* Stock Status */}
-                                        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${product.stockStatus === 'In stock'
-                                                ? 'bg-green-100 text-green-700'
-                                                : 'bg-red-100 text-red-700'
-                                            }`}>
-                                            {product.stockStatus === 'In stock' ? 'In Stock' : 'Out of Stock'}
-                                        </span>
-                                    </div>
-                                </div>
+                                <p className="font-semibold text-[#1c1c1c] text-[16px] mb-1">{item.priceLabel}</p>
+                                <p className="text-[#8b96a5] text-[14px] leading-snug line-clamp-2">{item.description}</p>
                             </motion.div>
                         ))}
                     </div>
-                )}
+                </div>
+            </section>
 
-                {/* Load More Button */}
-                {recommendedProducts.length > 0 && (
-                    <div className="text-center mt-10">
-                        <button className="px-8 py-3 bg-white border-2 border-blue-500 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-300 hover:scale-105">
-                            Load More Products
-                        </button>
-                    </div>
-                )}
-            </div>
-        </section>
+            <LoginModal
+                isOpen={loginModalOpen}
+                onClose={() => setLoginModalOpen(false)}
+                onSwitchToSignup={() => setLoginModalOpen(false)}
+                loginFn={login}
+                from={pendingItem ? `/product/${pendingItem.id}` : '/'}
+            />
+        </>
     );
 };
 

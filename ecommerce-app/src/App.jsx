@@ -1,5 +1,7 @@
 // src/App.jsx
 import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext'; // ← add this
 import PageLayout from './components/shared/PageLayout';
 import ProductListingPage from './pages/ProductListingPage';
 import HomePage from './pages/Homepage';
@@ -10,23 +12,21 @@ import AdminPage from './pages/AdminPage';
 
 function App() {
   return (
-    <Routes>
-      {/* Admin — Layout ke bahar */}
-      <Route path="/admin" element={<AdminPage />} />
+    <AuthProvider>
+      <CartProvider> {/* ← CartProvider andar AuthProvider ke, bahar Routes ke */}
+        <Routes>
+          {/* Admin - no layout */}
+          <Route path="/admin" element={<AdminPage />} />
 
-      {/* Baaki sab — PageLayout children ke andar */}
-      <Route path="/" element={
-        <PageLayout>
-          <Routes>
-            <Route index element={<HomePage />} />
-            <Route path="product-listing" element={<ProductListingPage />} />
-            <Route path="product/:id" element={<ProductDetailsPage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="cart" element={<CartPage />} />
-          </Routes>
-        </PageLayout>
-      } />
-    </Routes>
+          {/* All routes with PageLayout */}
+          <Route path="/" element={<PageLayout><HomePage /></PageLayout>} />
+          <Route path="/profile" element={<PageLayout><ProfilePage /></PageLayout>} />
+          <Route path="/cart" element={<PageLayout><CartPage /></PageLayout>} />
+          <Route path="/product-listing" element={<PageLayout><ProductListingPage /></PageLayout>} />
+          <Route path="/product/:id" element={<PageLayout><ProductDetailsPage /></PageLayout>} />
+        </Routes>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

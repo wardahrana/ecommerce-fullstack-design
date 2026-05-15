@@ -1,49 +1,50 @@
-// src/services/cartApi.js
-import axios from 'axios';
+// src/services/cartapi.js
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-const API_BASE = 'http://localhost:5000/api/cart';
-
-const getToken = () => localStorage.getItem('token');
-
-const axiosInstance = axios.create({
-    baseURL: API_BASE
+const getAuthHeaders = () => ({
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
 });
 
-axiosInstance.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+export const cartApi = {
+    fetchCart: async () => {
+        const res = await fetch(`${BASE_URL}/api/cart`, {
+            headers: getAuthHeaders()
+        });
+        return res.json();
+    },
+
+    addToCart: async (product) => {
+        const res = await fetch(`${BASE_URL}/api/cart/add`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(product)
+        });
+        return res.json();
+    },
+
+    updateQuantity: async (itemId, quantity) => {
+        const res = await fetch(`${BASE_URL}/api/cart/update/${itemId}`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ quantity })
+        });
+        return res.json();
+    },
+
+    removeFromCart: async (itemId) => {
+        const res = await fetch(`${BASE_URL}/api/cart/remove/${itemId}`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        return res.json();
+    },
+
+    clearCart: async () => {
+        const res = await fetch(`${BASE_URL}/api/cart/clear`, {
+            method: 'DELETE',
+            headers: getAuthHeaders()
+        });
+        return res.json();
     }
-    return config;
-});
-
-// ✅ Named exports — CartContext ke saath match karte hain
-export const getCart = async () => {
-    const response = await axiosInstance.get('/');
-    return response.data;
-};
-
-export const addToCart = async (productId, quantity) => {
-    const response = await axiosInstance.post('/add', { productId, quantity });
-    return response.data;
-};
-
-export const updateCartItem = async (productId, quantity) => {
-    const response = await axiosInstance.put(`/update/${productId}`, { quantity });
-    return response.data;
-};
-
-export const removeFromCart = async (productId) => {
-    const response = await axiosInstance.delete(`/remove/${productId}`);
-    return response.data;
-};
-
-export const clearCart = async () => {
-    const response = await axiosInstance.delete('/clear');
-    return response.data;
-};
-
-export const getCartCount = async () => {
-    const response = await axiosInstance.get('/count');
-    return response.data;
 };
