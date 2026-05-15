@@ -31,15 +31,18 @@ const RecommendedItems = ({ items }) => {
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                         {items && items.length > 0 ? (
                             items.map((item) => {
-                                // --- STEP 3: Logic added correctly inside map block ---
+                                // --- CASE-INSENSITIVE LOGIC ---
                                 let displayImage = item.image;
-                                if (item.name === "Winter coat") {
+
+                                // Hum item.name ko small letters mein convert kar rahe hain check karne ke liye
+                                const itemNameNormalized = item.name ? item.name.toLowerCase() : "";
+
+                                if (itemNameNormalized === "winter coat") {
                                     displayImage = winterCoatImg;
-                                } else if (item.name === "Blenders") {
+                                } else if (itemNameNormalized === "blenders") {
                                     displayImage = blendersImg;
                                 }
 
-                                // Jab curly braces use karein map mein, toh return likhna zaroori hai
                                 return (
                                     <motion.div
                                         key={item.id || item._id}
@@ -50,7 +53,7 @@ const RecommendedItems = ({ items }) => {
                                         <div className="w-full h-[150px] mb-4 flex items-center justify-center overflow-hidden">
                                             <motion.img
                                                 whileHover={{ scale: 1.05 }}
-                                                src={displayImage} // displayImage variable yahan use ho raha hai
+                                                src={displayImage}
                                                 alt={item.name}
                                                 className="max-h-full max-w-full object-contain mix-blend-multiply"
                                             />
