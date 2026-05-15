@@ -1,5 +1,5 @@
 // src/services/cartapi.js
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const BASE_URL = import.meta.env.VITE_API_URL || 'https://ecommerce-fullstack-design-ruby.vercel.app';
 
 const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
