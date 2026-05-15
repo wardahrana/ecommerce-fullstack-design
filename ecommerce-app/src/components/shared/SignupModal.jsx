@@ -49,12 +49,10 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin, signupFn }) => {
     setApiError('');
     try {
       await signupFn(formData);
-      // ✅ signupFn already calls setUser in AuthContext
-      // Show success briefly then close — parent HeroSection will re-render via context
       setSuccess(true);
       setTimeout(() => {
-        onClose();   // close modal
-        resetForm(); // clean up form state
+        onClose();
+        resetForm();
       }, 1500);
     } catch (err) {
       setApiError(err.message || 'Signup failed');
@@ -100,7 +98,8 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin, signupFn }) => {
                   <p className="text-gray-500 mt-1">Your account has been created.</p>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
+                  {/* Full Name */}
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1e3a8a]" size={18} />
                     <input
@@ -109,11 +108,14 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin, signupFn }) => {
                       placeholder="Full Name"
                       value={formData.name}
                       onChange={handleChange}
+                      // FIX: Prevents name suggestions
+                      autoComplete="off"
                       className="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-50 border-none focus:ring-2 focus:ring-[#1e3a8a] transition-all outline-none"
                       required
                     />
                   </div>
 
+                  {/* Email */}
                   <div className="relative">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1e3a8a]" size={18} />
                     <input
@@ -122,11 +124,14 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin, signupFn }) => {
                       placeholder="Email Address"
                       value={formData.email}
                       onChange={handleChange}
+                      // FIX: Prevents email autofill
+                      autoComplete="one-time-code"
                       className="w-full pl-12 pr-4 py-4 rounded-2xl bg-gray-50 border-none focus:ring-2 focus:ring-[#1e3a8a] transition-all outline-none"
                       required
                     />
                   </div>
 
+                  {/* Password */}
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1e3a8a]" size={18} />
                     <input
@@ -135,6 +140,8 @@ const SignupModal = ({ isOpen, onClose, onSwitchToLogin, signupFn }) => {
                       placeholder="Password"
                       value={formData.password}
                       onChange={handleChange}
+                      // FIX: Prevents password suggestions
+                      autoComplete="new-password"
                       className="w-full pl-12 pr-12 py-4 rounded-2xl bg-gray-50 border-none focus:ring-2 focus:ring-[#1e3a8a] transition-all outline-none"
                       required
                     />

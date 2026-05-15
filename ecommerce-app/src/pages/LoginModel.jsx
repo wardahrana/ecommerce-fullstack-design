@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle, Sparkles, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// ← "from" prop: kept for backward compat but navigation handled by parent if needed
 const LoginModal = ({ isOpen, onClose, onSwitchToSignup, loginFn, from = '/' }) => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [errors, setErrors] = useState({});
@@ -57,18 +56,14 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, loginFn, from = '/' }) 
 
         setLoading(true);
         try {
-            // ✅ loginFn calls setUser(data.user) in AuthContext — React will re-render all consumers
             await loginFn(formData.email, formData.password);
             setSuccess(true);
 
-            // ✅ Just close the modal after 1.5s — no navigate()
-            // navigate was causing issues when already on the same route (from="/")
             setTimeout(() => {
                 onClose();
                 resetForm();
-                // ✅ Only navigate if going to a DIFFERENT page (e.g. from a product page)
                 if (from && from !== '/' && from !== window.location.pathname) {
-                    window.location.href = from; // hard redirect only if truly different page
+                    window.location.href = from;
                 }
             }, 1500);
 
@@ -129,7 +124,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, loginFn, from = '/' }) 
 
                 {/* Form Section */}
                 <div className="px-10 pb-10 pt-4 bg-white dark:bg-gray-900">
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
 
                         {/* Email */}
                         <div className="space-y-1">
@@ -143,6 +138,8 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, loginFn, from = '/' }) 
                                     value={formData.email}
                                     onChange={handleChange}
                                     onBlur={() => setTouched(p => ({ ...p, email: true }))}
+                                    // FIX: Prevents browser autofill
+                                    autoComplete="one-time-code"
                                     className="w-full p-4 bg-transparent outline-none text-gray-700 dark:text-gray-200 text-sm"
                                 />
                             </div>
@@ -162,6 +159,8 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, loginFn, from = '/' }) 
                                     value={formData.password}
                                     onChange={handleChange}
                                     onBlur={() => setTouched(p => ({ ...p, password: true }))}
+                                    // FIX: Prevents browser autofill
+                                    autoComplete="new-password"
                                     className="w-full p-4 bg-transparent outline-none text-gray-700 dark:text-gray-200 text-sm"
                                 />
                                 <button type="button" onClick={() => setShowPassword(!showPassword)} className="pr-4 text-gray-400 hover:text-[#1e3a8a]">
