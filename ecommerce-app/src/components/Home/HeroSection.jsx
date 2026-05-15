@@ -55,7 +55,8 @@ const HeroSection = () => {
                                     <li key={index}>
                                         <Link
                                             to={category.path}
-                                            className={`block px-3 py-2 rounded-md text-[13px] transition-colors ${index === 0
+                                            /* ✅ Added 'no-underline' and 'hover:no-underline' to ensure the line is removed */
+                                            className={`block px-3 py-2 rounded-md text-[13px] transition-colors no-underline hover:no-underline ${index === 0
                                                 ? 'bg-blue-50 text-blue-600 font-medium'
                                                 : 'text-gray-600 hover:bg-blue-50 hover:text-blue-600'
                                                 }`}
@@ -93,7 +94,7 @@ const HeroSection = () => {
                                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-block">
                                         <Link
                                             to="/category/tech"
-                                            className="bg-white text-gray-800 text-[13px] font-medium px-5 py-2.5 rounded shadow-sm transition-colors border border-gray-100"
+                                            className="bg-white text-gray-800 text-[13px] font-medium px-5 py-2.5 rounded shadow-sm transition-colors border border-gray-100 no-underline"
                                         >
                                             Learn more
                                         </Link>
