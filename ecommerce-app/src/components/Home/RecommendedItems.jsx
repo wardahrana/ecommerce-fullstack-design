@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../../pages/LoginModel';
 // Images import
-import winterCoatImg from '../assets/cloth/2.jpg';
-import blendersImg from '../assets/cloth/4.jpg';
+import winterCoatImg from '../../assets/cloth/2.jpg';
+import blendersImg from '../../assets/cloth/4.jpg';
 
 const RecommendedItems = ({ items }) => {
     const navigate = useNavigate();
